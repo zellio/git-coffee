@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+
+### git-coffee --- coffee
+
+## Copyright (c) 2015 Zachary Elliott
+##
+## Authors: Zachary Elliott <contact@zell.io>
+## URL:
+## Version: 0.1.0
+
+### Commentary:
+
+##
+
+### License:
+
+## All Rights Reserved
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the “Software”), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+### Code:
+
+function error
+{
+	echo -e "\e[1;31m>>> ERROR: $@\e[0m"
+}
+
+function requires
+{
+	if ! command -v "$1" >/dev/null 2>&1; then
+		error "Required program \`$1' not found in \$PATH"
+		exit 1
+	fi
+
+	return 0
+}
+
+requires basename
+
+gc__basename="$(basename "$0")"
+
+function gc__usage
+{
+	cat <<EOF
+usage: git coffee                    Brew some coffee
+    -b, --brew-time                  Lenght of brew in half seconds
+
+General options:
+        --debug                      Turn on xtrace
+    -h, --help                       Display this help message
+        --version                    Display the version number
+
+${gc__basename} home page: <https://localhost.localhost>
+Report bugs to: <https://localhost.localhost/issues>
+EOF
+	return 0
+}
+
+function gc__version
+{
+	cat <<EOF
+0.1.0
+EOF
+}
+
+function gc__dump_coffee
+{
+	local brew_time="$1"
+
+	echo -n "Brewing "
+
+	for (( i = 0; i < brew_time; i++ )); do
+		sleep 0.5
+		echo -n "."
+	done
+
+	sleep 0.5
+	echo " "
+	sleep 0.5
+
+	cat <<'EOF'
+
+                        (
+                          )     (
+                   ___...(-------)-....___
+               .-""       )    (          ""-.
+         .-'``'|-._             )         _.-|
+        /  .--.|   `""---...........---""`   |
+       /  /    |                             |
+       |  |    |                             |
+        \  \   |                             |
+         `\ `\ |                             |
+           `\ `|                             |
+           _/ /\                             /
+          (__/  \                           /
+       _..---""` \                         /`""---.._
+    .-'           \                       /          '-.
+   :               `-.__             __.-'              :
+   :                  ) ""---...---"" (                 :
+    '._               `"--...___...--"`              _.'
+  jgs \""--..__                              __..--""/
+       '._     """----.....______.....----"""     _.'
+          `""--..,,_____            _____,,..--""`
+                        `"""----"""`
+EOF
+	return 0
+}
+
+
+function gc__main
+{
+	ARGS=$(getopt \
+			   --longoptions 'brew-time:,debug,help,version' \
+			   --name "$gc__basename" \
+			   --options 'b:,h' \
+			   -- "$@");
+
+	eval set -- "$ARGS"
+
+	brew_time=3
+	while :; do
+		case "$1" in
+			-b|--brew-time)
+				brew_time="$2"
+				shift 2
+				;;
+
+			--debug)
+				set -x
+				shift 1
+				;;
+			-h|--help)
+				gc__usage
+				return 0
+				;;
+			--version)
+				gc__version
+				return 0
+				;;
+
+			--)
+				shift
+				break
+				;;
+		esac
+	done
+
+	gc__dump_coffee "$brew_time"
+}
+
+gc__main "$@"
+
+exit "$?"
+
+# end of git-coffee
