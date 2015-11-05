@@ -134,7 +134,7 @@ function gc__main
 
 	eval set -- "$ARGS"
 
-	brew_time=6
+	brew_time=3
 	while :; do
 		case "$1" in
 			-b|--brew-time)
