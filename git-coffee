@@ -59,7 +59,7 @@ function gc__usage
 {
 	cat <<EOF
 usage: git coffee                    Brew some coffee
-    -b, --brew-time                  Lenght of brew in half seconds
+    -b, --brew-time                  Lenght of brew in seconds
 
 General options:
         --debug                      Turn on xtrace
@@ -82,6 +82,7 @@ EOF
 function gc__dump_coffee
 {
 	local brew_time="$1"
+	brew_time *= 2
 
 	echo -n "Brewing "
 
